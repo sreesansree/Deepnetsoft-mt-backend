@@ -12,7 +12,7 @@ export const getMenuItems = async (req: Request, res: Response) => {
 }
 
 
-export const createMenuItem = async (req: Request, res: Response) => {
+export const createMenuItem = async (req: Request, res: Response): Promise<void> => {
     const { menuId, name, description, price } = req.body;
 
     // Validation 
@@ -38,7 +38,8 @@ export const createMenuItem = async (req: Request, res: Response) => {
     }
     // If validation fails, send errors
     if (errors.length > 0) {
-        return res.status(400).json({ errors });
+        res.status(400).json({ errors });
+        return
     }
 
 
@@ -55,9 +56,10 @@ export const createMenuItem = async (req: Request, res: Response) => {
 
     } catch (error: any) {
         if (error.code === 11000) {
-            return res
+            res
                 .status(400)
                 .json({ message: "Item name must be unique within the same menu." });
+            return
         }
         res.status(500).json({ message: "Server Error" });
     }

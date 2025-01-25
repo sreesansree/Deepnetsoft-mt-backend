@@ -10,7 +10,7 @@ export const getMenus = async (req: Request, res: Response) => {
     }
 }
 
-export const createMenu = async (req: Request, res: Response) => {
+export const createMenu = async (req: Request, res: Response): Promise<void> => {
     const { name, description } = req.body;
 
     // validation 
@@ -25,7 +25,8 @@ export const createMenu = async (req: Request, res: Response) => {
 
     // If validation fails, send errors
     if (errors.length > 0) {
-        return res.status(400).json({ errors });
+        res.status(400).json({ errors });
+        return
     }
 
     try {
@@ -33,6 +34,7 @@ export const createMenu = async (req: Request, res: Response) => {
         await menu.save();
         res.status(201).json(menu);
     } catch (error) {
+        console.error(error)
         res.status(500).json({ message: "Server Error" })
     }
 }
