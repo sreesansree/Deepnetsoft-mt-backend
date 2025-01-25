@@ -30,10 +30,16 @@ export const createMenu = async (req: Request, res: Response): Promise<void> => 
     }
 
     try {
-        const menu = new Menu({ name: name.trim(), description: description.trim() });
+        const menu = new Menu({
+            name: name.trim(), description: description.trim()
+        });
         await menu.save();
         res.status(201).json(menu);
-    } catch (error) {
+    } catch (error: any) {
+        if (error.code === 11000) {
+            res.status(400).json({ message: "Menu name must be unique." });
+            return
+        }
         console.error(error)
         res.status(500).json({ message: "Server Error" })
     }
